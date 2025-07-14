@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Image Converter</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    function handleDrop(e) {
+      e.preventDefault();
+      const input = document.getElementById('file-input');
+      input.files = e.dataTransfer.files;
+      document.getElementById('file-label').textContent = input.files.length + " files selected";
+    }
+
+    function handleDragOver(e) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = "copy";
+    }
+
+    function updateFileLabel() {
+      const input = document.getElementById('file-input');
+      document.getElementById('file-label').textContent = input.files.length + " files selected";
+    }
+  </script>
+</head>
+<body class="bg-gray-100 font-sans p-8">
+  <div class="max-w-xl mx-auto bg-white p-8 shadow-lg rounded-lg">
+    <h1 class="text-2xl font-bold mb-4">🖼️ Image Converter</h1>
+    <form action="/" method="post" enctype="multipart/form-data" class="space-y-4">
+      
+      <div
+        ondrop="handleDrop(event)"
+        ondragover="handleDragOver(event)"
+        class="border-2 border-dashed border-gray-400 rounded-lg p-6 text-center bg-gray-50 cursor-pointer"
+      >
+        <label for="file-input" class="block text-gray-600 font-medium">Drag and drop images here</label>
+        <p id="file-label" class="text-sm text-gray-400 mt-2">or click to select files</p>
+        <input type="file" name="images" id="file-input" multiple required class="hidden" onchange="updateFileLabel()">
+      </div>
+
+      <div>
+        <label class="block font-medium">Convert to format:</label>
+        <select name="format" class="mt-1 p-2 border rounded w-full">
+          <option value="png">PNG</option>
+          <option value="jpeg">JPEG</option>
+          <option value="webp">WEBP</option>
+        </select>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block font-medium">Width (px)</label>
+          <input type="number" name="width" class="mt-1 p-2 border rounded w-full" placeholder="Optional">
+        </div>
+        <div>
+          <label class="block font-medium">Height (px)</label>
+          <input type="number" name="height" class="mt-1 p-2 border rounded w-full" placeholder="Optional">
+        </div>
+      </div>
+
+      <div>
+        <label class="block font-medium">Compression Quality (1-100)</label>
+        <input type="range" name="quality" id="quality-slider" min="10" max="100" value="85" class="w-full">
+        <p class="text-sm text-gray-600 mt-1">Current: <span id="quality-value">85</span>%</p>
+      </div>
+
+      <div class="flex flex-col gap-2">
+        <label><input type="checkbox" name="grayscale"> Grayscale</label>
+        <label><input type="checkbox" name="remove_bg"> Remove Background {% if not rembg_available %}(not available){% endif %}</label>
+      </div>
+
+      <div>
+        <label class="block">
+        <span class="block font-medium mb-1">Watermark Logo (optional)</span>
+        <input
+            type="file"
+            name="watermark_logo"
+            accept="image/*"
+            class="block w-full text-sm text-gray-700
+                file:mr-4 file:py-2 file:px-4
+                file:rounded-md file:border-0
+                file:text-sm file:font-semibold
+                file:bg-blue-50 file:text-blue-700
+                hover:file:bg-blue-100"
+        />
+        </label>
+      </div>
+
+      <div>
+        <label class="block font-medium">Watermark Position</label>
+        <select name="watermark_position" class="mt-1 p-2 border rounded w-full">
+            <option value="bottom-right">Bottom Right</option>
+            <option value="bottom-left">Bottom Left</option>
+            <option value="top-left">Top Left</option>
+            <option value="top-right">Top Right</option>
+            <option value="center">Center</option>
+        </select>
+      </div>
+
+
+      <button type="submit" class="bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700">
+        Convert & Download
+      </button>
+    </form>
+  </div>
+
+<script>
+  const slider = document.getElementById('quality-slider');
+  const qualityLabel = document.getElementById('quality-value');
+  slider.addEventListener('input', () => {
+    qualityLabel.textContent = slider.value;
+  });
+  const form = document.getElementById('image-form');
+</script>
+
+</body>
+</html>
+
